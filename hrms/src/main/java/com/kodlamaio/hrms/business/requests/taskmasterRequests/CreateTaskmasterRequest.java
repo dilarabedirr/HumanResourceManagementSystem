@@ -11,6 +11,7 @@ public class CreateTaskmasterRequest {
 
 	private String email;
 	private String password;
+	private String passwordAgain;
 	private String companyName;
 	private String webSiteName;
 	private String phoneNumber;

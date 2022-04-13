@@ -9,8 +9,13 @@ import org.springframework.stereotype.Service;
 import com.kodlamaio.hrms.business.abstracts.JobSeekerService;
 import com.kodlamaio.hrms.business.dtos.JobSeekerSearchListDto;
 import com.kodlamaio.hrms.business.requests.jobseekerRequests.CreateJobSeekerRequest;
+import com.kodlamaio.hrms.core.adapters.abstracts.UserCheckService;
+import com.kodlamaio.hrms.core.adapters.abstracts.VerificationService;
+import com.kodlamaio.hrms.core.utilities.business.BusinessRules;
 import com.kodlamaio.hrms.core.utilities.mapping.ModelMapperService;
+import com.kodlamaio.hrms.core.utilities.messages.Message;
 import com.kodlamaio.hrms.core.utilities.results.DataResult;
+import com.kodlamaio.hrms.core.utilities.results.ErrorResult;
 import com.kodlamaio.hrms.core.utilities.results.Result;
 import com.kodlamaio.hrms.core.utilities.results.SuccessDataResult;
 import com.kodlamaio.hrms.core.utilities.results.SuccessResult;
@@ -22,12 +27,17 @@ public class JobSeekerManager implements JobSeekerService {
 
 	private JobSeekerDao jobSeekerDao;
 	private ModelMapperService modelMapperService;
+	private UserCheckService userCheckService;
+	private VerificationService verificationService;
 
 	@Autowired
-	public JobSeekerManager(JobSeekerDao jobSeekerDao, ModelMapperService modelMapperService) {
+	public JobSeekerManager(JobSeekerDao jobSeekerDao, ModelMapperService modelMapperService,
+			UserCheckService userCheckService, VerificationService verificationService) {
 		super();
 		this.jobSeekerDao = jobSeekerDao;
 		this.modelMapperService = modelMapperService;
+		this.userCheckService = userCheckService;
+		this.verificationService = verificationService;
 	}
 
 	@Override
@@ -36,14 +46,52 @@ public class JobSeekerManager implements JobSeekerService {
 		List<JobSeekerSearchListDto> response = result.stream()
 				.map(jobSeeker -> modelMapperService.forDto().map(jobSeeker, JobSeekerSearchListDto.class))
 				.collect(Collectors.toList());
-		return new SuccessDataResult<List<JobSeekerSearchListDto>>(response);
+		return new SuccessDataResult<List<JobSeekerSearchListDto>>(response, Message.jobSeekerUserListed);
 	}
 
 	@Override
 	public Result add(CreateJobSeekerRequest createJobSeekerRequest) {
+		Result result = BusinessRules.run(allFieldNotNull(createJobSeekerRequest),
+				checkIfEmailExist(createJobSeekerRequest.getEmail()),
+				checkIfNationalNumberExist(createJobSeekerRequest.getNationalNumber()),
+				userCheckService.checkIfRealCustomer(createJobSeekerRequest),
+				verificationService.checkIfUserVerification());
+		if (result != null) {
+			return result;
+		}
+
 		JobSeeker jobSeeker = modelMapperService.forRequest().map(createJobSeekerRequest, JobSeeker.class);
 		this.jobSeekerDao.save(jobSeeker);
-		return new SuccessResult("İş arayan eklendi.");
+		return new SuccessResult(Message.jobSeekerAdded);
+	}
+
+	private Result allFieldNotNull(CreateJobSeekerRequest createJobSeekerRequest) {
+		if (createJobSeekerRequest.getFirstName() == "" || createJobSeekerRequest.getLastName() == ""
+				|| createJobSeekerRequest.getNationalNumber() == "" || createJobSeekerRequest.getYearOfBirth() == ""
+				|| createJobSeekerRequest.getEmail() == "" || createJobSeekerRequest.getPassword() == ""
+				|| createJobSeekerRequest.getPasswordAgain() == "") {
+
+			return new ErrorResult(Message.fieldNotNullErrorResultMessage);
+		}
+		return new SuccessResult();
+	}
+
+	private Result checkIfEmailExist(String email) {
+		JobSeeker jobSeeker = this.jobSeekerDao.getByEmail(email);
+		if (jobSeeker != null) {
+			return new ErrorResult(Message.emailExistErrorResultMessage);
+		}
+
+		return new SuccessResult();
+	}
+
+	private Result checkIfNationalNumberExist(String nationalNumber) {
+		JobSeeker jobSeeker = this.jobSeekerDao.getByNationalNumber(nationalNumber);
+		if (jobSeeker != null) {
+			return new ErrorResult(Message.jobSeekerNationalNumberExistErrorResultMessage);
+		}
+
+		return new SuccessResult();
 	}
 
 }

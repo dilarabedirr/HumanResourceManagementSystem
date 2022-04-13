@@ -10,6 +10,7 @@ import com.kodlamaio.hrms.business.abstracts.SystemAdminService;
 import com.kodlamaio.hrms.business.dtos.SystemAdminSearchListDto;
 import com.kodlamaio.hrms.business.requests.systemAdminRequests.CreateSystemAdminRequest;
 import com.kodlamaio.hrms.core.utilities.mapping.ModelMapperService;
+import com.kodlamaio.hrms.core.utilities.messages.Message;
 import com.kodlamaio.hrms.core.utilities.results.DataResult;
 import com.kodlamaio.hrms.core.utilities.results.Result;
 import com.kodlamaio.hrms.core.utilities.results.SuccessDataResult;
@@ -36,14 +37,14 @@ public class SystemAdminManager implements SystemAdminService{
 		List<SystemAdminSearchListDto> response = result.stream()
 				.map(systemAdmin -> modelMapperService.forDto().map(systemAdmin, SystemAdminSearchListDto.class))
 				.collect(Collectors.toList());
-		return new SuccessDataResult<List<SystemAdminSearchListDto>>(response);
+		return new SuccessDataResult<List<SystemAdminSearchListDto>>(response, Message.systemUserListed);
 	}
 
 	@Override
 	public Result add(CreateSystemAdminRequest createSystemAdminRequest) {
 		SystemAdmin systemAdmin = modelMapperService.forRequest().map(createSystemAdminRequest, SystemAdmin.class);
 		this.systemAdminDao.save(systemAdmin);
-		return new SuccessResult("Sistem personeli eklendi.");
+		return new SuccessResult(Message.systemAdminAdded);
 	}
 
 }

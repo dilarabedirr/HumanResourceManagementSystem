@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.kodlamaio.hrms.business.abstracts.JobPositionService;
 import com.kodlamaio.hrms.core.utilities.business.BusinessRules;
+import com.kodlamaio.hrms.core.utilities.messages.Message;
 import com.kodlamaio.hrms.core.utilities.results.DataResult;
 import com.kodlamaio.hrms.core.utilities.results.ErrorResult;
 import com.kodlamaio.hrms.core.utilities.results.Result;
@@ -28,7 +29,7 @@ public class JobPositionManager implements JobPositionService {
 
 	@Override
 	public DataResult<List<JobPosition>> getAll() {
-		return new SuccessDataResult<List<JobPosition>>(jobPositionDao.findAll(), "iş pozisyonları listelendi.");
+		return new SuccessDataResult<List<JobPosition>>(jobPositionDao.findAll(), Message.jobPositionListed);
 	}
 
 	@Override
@@ -38,7 +39,7 @@ public class JobPositionManager implements JobPositionService {
 			return result;
 		}
 		jobPositionDao.save(jobPosition);
-		return new SuccessResult("iş pozisyonu eklendi.");
+		return new SuccessResult(Message.jobPositionAdded);
 	}
 
 	private Result isJobPositionExist(String positionName) {
@@ -46,7 +47,7 @@ public class JobPositionManager implements JobPositionService {
 		JobPosition jobPosition = this.jobPositionDao.getByPositionName(positionName);
 		
 		if (jobPosition != null) {
-			return new ErrorResult("Bu pozisyon adı tekrar edemez");
+			return new ErrorResult(Message.jobPositionExistErrorResultMessage);
 		}
 		
 		return new SuccessResult();
