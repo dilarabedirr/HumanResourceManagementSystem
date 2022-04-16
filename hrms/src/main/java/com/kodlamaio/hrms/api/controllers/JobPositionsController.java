@@ -10,9 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kodlamaio.hrms.business.abstracts.JobPositionService;
+import com.kodlamaio.hrms.business.dtos.JobPositionSearchListDto;
+import com.kodlamaio.hrms.business.requests.jobPositionRequests.CreateJobPositionRequest;
 import com.kodlamaio.hrms.core.utilities.results.DataResult;
 import com.kodlamaio.hrms.core.utilities.results.Result;
-import com.kodlamaio.hrms.entities.concretes.JobPosition;
 
 @RestController
 @RequestMapping("/api/jobpositions")
@@ -27,13 +28,13 @@ public class JobPositionsController {
 	}
 
 	@GetMapping("/getall")
-	public DataResult<List<JobPosition>> getAll() {
+	public DataResult<List<JobPositionSearchListDto>> getAll() {
 		return jobPositionService.getAll();
 	}
 
 	@PostMapping("/add")
-	public Result add(@RequestBody JobPosition jobPosition) {
-		return jobPositionService.add(jobPosition);
+	public Result add(@RequestBody CreateJobPositionRequest createJobPositionRequest) {
+		return jobPositionService.add(createJobPositionRequest);
 	}
 
 }

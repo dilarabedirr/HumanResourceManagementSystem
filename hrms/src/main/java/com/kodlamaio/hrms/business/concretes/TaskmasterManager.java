@@ -8,12 +8,12 @@ import org.springframework.stereotype.Service;
 
 import com.kodlamaio.hrms.business.abstracts.TaskmasterService;
 import com.kodlamaio.hrms.business.dtos.TaskmasterSearchListDto;
+import com.kodlamaio.hrms.business.messages.Messages;
 import com.kodlamaio.hrms.business.requests.taskmasterRequests.CreateTaskmasterRequest;
 import com.kodlamaio.hrms.core.adapters.abstracts.HrmsVerificationService;
 import com.kodlamaio.hrms.core.adapters.abstracts.VerificationService;
 import com.kodlamaio.hrms.core.utilities.business.BusinessRules;
 import com.kodlamaio.hrms.core.utilities.mapping.ModelMapperService;
-import com.kodlamaio.hrms.core.utilities.messages.Message;
 import com.kodlamaio.hrms.core.utilities.results.DataResult;
 import com.kodlamaio.hrms.core.utilities.results.ErrorResult;
 import com.kodlamaio.hrms.core.utilities.results.Result;
@@ -46,7 +46,7 @@ public class TaskmasterManager implements TaskmasterService {
 		List<TaskmasterSearchListDto> response = result.stream()
 				.map(taskmaster -> modelMapperService.forDto().map(taskmaster, TaskmasterSearchListDto.class))
 				.collect(Collectors.toList());
-		return new SuccessDataResult<List<TaskmasterSearchListDto>>(response, Message.taskmasterUserListed);
+		return new SuccessDataResult<List<TaskmasterSearchListDto>>(response, Messages.taskmasterUserListed);
 	}
 
 	@Override
@@ -60,11 +60,11 @@ public class TaskmasterManager implements TaskmasterService {
 		}
 		Taskmaster taskmaster = modelMapperService.forRequest().map(createTaskmasterRequest, Taskmaster.class);
 		this.taskmasterDao.save(taskmaster);
-		return new SuccessResult(Message.taskmasterAdded);
+		return new SuccessResult(Messages.taskmasterAdded);
 	}
 
 	private Result checkIfCorporateEmail(String website, String email) {
-		return email.split("@")[1].equals(website) ? new SuccessResult() : new ErrorResult(Message.emailNotCorporate);
+		return email.split("@")[1].equals(website) ? new SuccessResult() : new ErrorResult(Messages.emailNotCorporate);
 	}
 
 	private Result allFieldNotNull(CreateTaskmasterRequest createTaskmasterRequest) {
@@ -72,7 +72,7 @@ public class TaskmasterManager implements TaskmasterService {
 				|| createTaskmasterRequest.getEmail() == "" || createTaskmasterRequest.getPassword() == ""
 				|| createTaskmasterRequest.getPasswordAgain() == "" || createTaskmasterRequest.getPhoneNumber() == "") {
 
-			return new ErrorResult(Message.fieldNotNullErrorResultMessage);
+			return new ErrorResult(Messages.fieldNotNullErrorResultMessage);
 		}
 		return new SuccessResult();
 	}
@@ -80,7 +80,7 @@ public class TaskmasterManager implements TaskmasterService {
 	private Result checkIfEmailExist(String email) {
 		Taskmaster taskmaster = this.taskmasterDao.getByEmail(email);
 		if (taskmaster != null) {
-			return new ErrorResult(Message.emailExistErrorResultMessage);
+			return new ErrorResult(Messages.emailExistErrorResultMessage);
 		}
 
 		return new SuccessResult();

@@ -8,12 +8,12 @@ import org.springframework.stereotype.Service;
 
 import com.kodlamaio.hrms.business.abstracts.JobSeekerService;
 import com.kodlamaio.hrms.business.dtos.JobSeekerSearchListDto;
+import com.kodlamaio.hrms.business.messages.Messages;
 import com.kodlamaio.hrms.business.requests.jobseekerRequests.CreateJobSeekerRequest;
 import com.kodlamaio.hrms.core.adapters.abstracts.UserCheckService;
 import com.kodlamaio.hrms.core.adapters.abstracts.VerificationService;
 import com.kodlamaio.hrms.core.utilities.business.BusinessRules;
 import com.kodlamaio.hrms.core.utilities.mapping.ModelMapperService;
-import com.kodlamaio.hrms.core.utilities.messages.Message;
 import com.kodlamaio.hrms.core.utilities.results.DataResult;
 import com.kodlamaio.hrms.core.utilities.results.ErrorResult;
 import com.kodlamaio.hrms.core.utilities.results.Result;
@@ -46,7 +46,7 @@ public class JobSeekerManager implements JobSeekerService {
 		List<JobSeekerSearchListDto> response = result.stream()
 				.map(jobSeeker -> modelMapperService.forDto().map(jobSeeker, JobSeekerSearchListDto.class))
 				.collect(Collectors.toList());
-		return new SuccessDataResult<List<JobSeekerSearchListDto>>(response, Message.jobSeekerUserListed);
+		return new SuccessDataResult<List<JobSeekerSearchListDto>>(response, Messages.jobSeekerUserListed);
 	}
 
 	@Override
@@ -62,7 +62,7 @@ public class JobSeekerManager implements JobSeekerService {
 
 		JobSeeker jobSeeker = modelMapperService.forRequest().map(createJobSeekerRequest, JobSeeker.class);
 		this.jobSeekerDao.save(jobSeeker);
-		return new SuccessResult(Message.jobSeekerAdded);
+		return new SuccessResult(Messages.jobSeekerAdded);
 	}
 
 	private Result allFieldNotNull(CreateJobSeekerRequest createJobSeekerRequest) {
@@ -71,7 +71,7 @@ public class JobSeekerManager implements JobSeekerService {
 				|| createJobSeekerRequest.getEmail() == "" || createJobSeekerRequest.getPassword() == ""
 				|| createJobSeekerRequest.getPasswordAgain() == "") {
 
-			return new ErrorResult(Message.fieldNotNullErrorResultMessage);
+			return new ErrorResult(Messages.fieldNotNullErrorResultMessage);
 		}
 		return new SuccessResult();
 	}
@@ -79,7 +79,7 @@ public class JobSeekerManager implements JobSeekerService {
 	private Result checkIfEmailExist(String email) {
 		JobSeeker jobSeeker = this.jobSeekerDao.getByEmail(email);
 		if (jobSeeker != null) {
-			return new ErrorResult(Message.emailExistErrorResultMessage);
+			return new ErrorResult(Messages.emailExistErrorResultMessage);
 		}
 
 		return new SuccessResult();
@@ -88,7 +88,7 @@ public class JobSeekerManager implements JobSeekerService {
 	private Result checkIfNationalNumberExist(String nationalNumber) {
 		JobSeeker jobSeeker = this.jobSeekerDao.getByNationalNumber(nationalNumber);
 		if (jobSeeker != null) {
-			return new ErrorResult(Message.jobSeekerNationalNumberExistErrorResultMessage);
+			return new ErrorResult(Messages.jobSeekerNationalNumberExistErrorResultMessage);
 		}
 
 		return new SuccessResult();

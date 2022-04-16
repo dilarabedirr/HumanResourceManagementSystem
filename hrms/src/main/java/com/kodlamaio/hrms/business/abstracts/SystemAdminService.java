@@ -8,8 +8,8 @@ import com.kodlamaio.hrms.core.utilities.results.DataResult;
 import com.kodlamaio.hrms.core.utilities.results.Result;
 
 public interface SystemAdminService {
-	
-DataResult<List<SystemAdminSearchListDto>> getAll();
-	
+
+	DataResult<List<SystemAdminSearchListDto>> getAll();
+
 	Result add(CreateSystemAdminRequest createSystemAdminRequest);
 }

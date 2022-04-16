@@ -4,8 +4,10 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -14,22 +16,22 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Entity
-@Table(name = "taskmasters")
-@PrimaryKeyJoinColumn(name = "user_id")
+@Table(name = "cities")
 @AllArgsConstructor
 @NoArgsConstructor
-public class Taskmaster extends User{
+public class City {
 	
-	@Column(name="company_name")
-	private String companyName;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "city_id")
+	private int cityId;
 	
-	@Column(name="web_site_name")
-	private String webSiteName;
+	@Column(name = "city_name")
+	private String cityName;
 	
-	@Column(name="phone_number")
-	private String phoneNumber;
-	
-	@OneToMany(mappedBy = "taskmaster")
+	@OneToMany(mappedBy = "city")
 	private List<JobAdvertisement> jobAdvertisements;
+	
+	
 
 }

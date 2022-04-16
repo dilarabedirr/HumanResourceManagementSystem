@@ -9,11 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.kodlamaio.hrms.business.abstracts.JobSeekerService;
 import com.kodlamaio.hrms.business.abstracts.SystemAdminService;
-import com.kodlamaio.hrms.business.dtos.JobSeekerSearchListDto;
 import com.kodlamaio.hrms.business.dtos.SystemAdminSearchListDto;
-import com.kodlamaio.hrms.business.requests.jobseekerRequests.CreateJobSeekerRequest;
 import com.kodlamaio.hrms.business.requests.systemAdminRequests.CreateSystemAdminRequest;
 import com.kodlamaio.hrms.core.utilities.results.DataResult;
 import com.kodlamaio.hrms.core.utilities.results.Result;

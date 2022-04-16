@@ -4,9 +4,9 @@ import java.rmi.RemoteException;
 
 import org.springframework.stereotype.Service;
 
+import com.kodlamaio.hrms.business.messages.Messages;
 import com.kodlamaio.hrms.business.requests.jobseekerRequests.CreateJobSeekerRequest;
 import com.kodlamaio.hrms.core.adapters.abstracts.UserCheckService;
-import com.kodlamaio.hrms.core.utilities.messages.Message;
 import com.kodlamaio.hrms.core.utilities.results.ErrorResult;
 import com.kodlamaio.hrms.core.utilities.results.Result;
 import com.kodlamaio.hrms.core.utilities.results.SuccessResult;
@@ -24,7 +24,7 @@ public class MernisServiceAdapter implements UserCheckService {
 					jobSeeker.getFirstName().toUpperCase(), jobSeeker.getLastName().toUpperCase(),
 					Integer.parseInt(jobSeeker.getYearOfBirth()));
 			if (!result) {
-				return new ErrorResult(Message.mernisVerification);
+				return new ErrorResult(Messages.mernisVerification);
 			}
 		} catch (NumberFormatException e) {
 			// TODO Auto-generated catch block
