@@ -1,9 +1,16 @@
 package com.kodlamaio.hrms.core.utilities.mapping;
 
-import org.modelmapper.ModelMapper;
+import java.util.List;
+
+//import org.modelmapper.ModelMapper;
 
 public interface ModelMapperService {
-	ModelMapper forDto();
+	
+//	ModelMapper forDto();
+//	ModelMapper forRequest();
+	
+	
+	<S,T> List<T> forDto(List<S> listTypeEntityClass, Class<T> targetDtoClass);
 
-	ModelMapper forRequest();
+	<T> Object forRequest(Object dtoClass, Class<T> targetEntityClass);
 }

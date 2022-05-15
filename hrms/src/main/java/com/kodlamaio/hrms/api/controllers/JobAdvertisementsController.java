@@ -17,6 +17,7 @@ import com.kodlamaio.hrms.business.dtos.JobAdvertisementSearchListDto;
 import com.kodlamaio.hrms.business.requests.jobAdvertisementRequests.CreateJobAdvertisementRequest;
 import com.kodlamaio.hrms.core.utilities.results.DataResult;
 import com.kodlamaio.hrms.core.utilities.results.Result;
+import com.kodlamaio.hrms.entities.dtos.JobAdvertisementDetailDto;
 
 @RestController
 @RequestMapping("/api/jobAdvertisements")
@@ -35,10 +36,6 @@ public class JobAdvertisementsController {
 		return this.jobAdvertisementService.getAll();
 	}
 
-	@GetMapping("/getByCityId")
-	public DataResult<List<JobAdvertisementSearchListDto>> getByCity_CityId(@RequestParam int cityId) {
-		return this.jobAdvertisementService.getByCity_CityId(cityId);
-	}
 
 	@PostMapping("/add")
 	public Result add(@RequestBody CreateJobAdvertisementRequest createJobAdvertisementRequest) {
@@ -46,23 +43,31 @@ public class JobAdvertisementsController {
 	}
 
 	@GetMapping("/getByActiveJobAdvertisement")
-	public DataResult<List<JobAdvertisementSearchListDto>> getByStatus() {
+	public DataResult<List<JobAdvertisementDetailDto>> getByStatus() {
 		return this.jobAdvertisementService.getByStatus();
 	}
 
 	@GetMapping("/getByStatusTrueOrderByDate")
-	public DataResult<List<JobAdvertisementSearchListDto>> getByStatusTrueOrderByDate() {
+	public DataResult<List<JobAdvertisementDetailDto>> getByStatusTrueOrderByDate() {
 		return this.jobAdvertisementService.getByStatusTrueOrderByDate();
 	}
 
-	@GetMapping("/getByTaskmasterIdAndStatusTrue")
-	public DataResult<List<JobAdvertisementSearchListDto>> getByTaskmasterIdAndStatusTrue(@RequestParam int taskmasterId) {
-		return this.jobAdvertisementService.getByTaskmasterIdAndStatusTrue(taskmasterId);
+	@GetMapping("/city")
+	public DataResult<List<JobAdvertisementDetailDto>> getByCity_cityName(@RequestParam String cityName){
+		return this.jobAdvertisementService.getByCity_cityNameAndStatusTrue(cityName);
+	}
+	@GetMapping("/company")
+	public DataResult<List<JobAdvertisementDetailDto>> getByTaskmaster_companyNameAndStatusTrue(@RequestParam String companyName){
+		return this.jobAdvertisementService.getByTaskmaster_companyNameAndStatusTrue(companyName);
 	}
 	
 	@GetMapping("/getByDateAndStatusTrue")
-	public DataResult<List<JobAdvertisementSearchListDto>> getByDateAndStatusTrue(@RequestParam("localDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate localDate) {
+	public DataResult<List<JobAdvertisementDetailDto>> getByDateAndStatusTrue(@RequestParam("localDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate localDate) {
 		return this.jobAdvertisementService.getByDateAndStatusTrue(localDate);
+	}
+	@PostMapping("/deactive")
+	public Result updateJobAdvertisementStatus(@RequestParam int jobAdvertisementId) {
+		return this.jobAdvertisementService.updateJobAdvertisementStatus(jobAdvertisementId);
 	}
 
 }

@@ -1,7 +1,6 @@
 package com.kodlamaio.hrms.business.concretes;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,11 +41,8 @@ public class TaskmasterManager implements TaskmasterService {
 
 	@Override
 	public DataResult<List<TaskmasterSearchListDto>> getAll() {
-		List<Taskmaster> result = this.taskmasterDao.findAll();
-		List<TaskmasterSearchListDto> response = result.stream()
-				.map(taskmaster -> modelMapperService.forDto().map(taskmaster, TaskmasterSearchListDto.class))
-				.collect(Collectors.toList());
-		return new SuccessDataResult<List<TaskmasterSearchListDto>>(response, Messages.taskmasterUserListed);
+		return new SuccessDataResult<List<TaskmasterSearchListDto>>(
+				modelMapperService.forDto(taskmasterDao.findAll(), TaskmasterSearchListDto.class));
 	}
 
 	@Override
@@ -54,11 +50,12 @@ public class TaskmasterManager implements TaskmasterService {
 		Result result = BusinessRules.run(
 				checkIfCorporateEmail(createTaskmasterRequest.getWebSiteName(), createTaskmasterRequest.getEmail()),
 				allFieldNotNull(createTaskmasterRequest), verificationService.checkIfUserVerification(),
-				hrmsVerificationService.checkIfHrmsUserVerification(), checkIfEmailExist(createTaskmasterRequest.getEmail()));
+				hrmsVerificationService.checkIfHrmsUserVerification(),
+				checkIfEmailExist(createTaskmasterRequest.getEmail()));
 		if (result != null) {
 			return result;
 		}
-		Taskmaster taskmaster = modelMapperService.forRequest().map(createTaskmasterRequest, Taskmaster.class);
+		Taskmaster taskmaster = (Taskmaster) modelMapperService.forRequest(createTaskmasterRequest, Taskmaster.class);
 		this.taskmasterDao.save(taskmaster);
 		return new SuccessResult(Messages.taskmasterAdded);
 	}
@@ -76,7 +73,7 @@ public class TaskmasterManager implements TaskmasterService {
 		}
 		return new SuccessResult();
 	}
-	
+
 	private Result checkIfEmailExist(String email) {
 		Taskmaster taskmaster = this.taskmasterDao.getByEmail(email);
 		if (taskmaster != null) {

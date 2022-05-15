@@ -1,7 +1,6 @@
 package com.kodlamaio.hrms.business.concretes;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,16 +32,13 @@ public class CityManager implements CityService {
 
 	@Override
 	public DataResult<List<CitySearchListDto>> getAll() {
-		List<City> result = this.cityDao.findAll();
-		List<CitySearchListDto> response = result.stream()
-				.map(city -> modelMapperService.forDto().map(city, CitySearchListDto.class))
-				.collect(Collectors.toList());
-		return new SuccessDataResult<List<CitySearchListDto>>(response, Messages.cityListed);
+		return new SuccessDataResult<List<CitySearchListDto>>(
+				modelMapperService.forDto(cityDao.findAll(), CitySearchListDto.class), Messages.cityListed);
 	}
 
 	@Override
 	public Result add(CreateCityRequest createCityRequest) {
-		City city = modelMapperService.forRequest().map(createCityRequest, City.class);
+		City city = (City) modelMapperService.forRequest(createCityRequest, City.class);
 		this.cityDao.save(city);
 		return new SuccessResult(Messages.cityAdded);
 	}

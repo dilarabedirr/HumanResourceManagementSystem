@@ -1,7 +1,6 @@
 package com.kodlamaio.hrms.business.concretes;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,11 +41,9 @@ public class JobSeekerManager implements JobSeekerService {
 
 	@Override
 	public DataResult<List<JobSeekerSearchListDto>> getAll() {
-		List<JobSeeker> result = this.jobSeekerDao.findAll();
-		List<JobSeekerSearchListDto> response = result.stream()
-				.map(jobSeeker -> modelMapperService.forDto().map(jobSeeker, JobSeekerSearchListDto.class))
-				.collect(Collectors.toList());
-		return new SuccessDataResult<List<JobSeekerSearchListDto>>(response, Messages.jobSeekerUserListed);
+		return new SuccessDataResult<List<JobSeekerSearchListDto>>(
+				modelMapperService.forDto(jobSeekerDao.findAll(), JobSeekerSearchListDto.class),
+				Messages.jobSeekerUserListed);
 	}
 
 	@Override
@@ -60,7 +57,7 @@ public class JobSeekerManager implements JobSeekerService {
 			return result;
 		}
 
-		JobSeeker jobSeeker = modelMapperService.forRequest().map(createJobSeekerRequest, JobSeeker.class);
+		JobSeeker jobSeeker = (JobSeeker) modelMapperService.forRequest(createJobSeekerRequest, JobSeeker.class);
 		this.jobSeekerDao.save(jobSeeker);
 		return new SuccessResult(Messages.jobSeekerAdded);
 	}

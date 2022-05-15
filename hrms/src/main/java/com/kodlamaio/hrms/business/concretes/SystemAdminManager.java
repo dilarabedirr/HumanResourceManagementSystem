@@ -1,7 +1,6 @@
 package com.kodlamaio.hrms.business.concretes;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,8 +18,8 @@ import com.kodlamaio.hrms.dataAccess.abstracts.SystemAdminDao;
 import com.kodlamaio.hrms.entities.concretes.SystemAdmin;
 
 @Service
-public class SystemAdminManager implements SystemAdminService{
-	
+public class SystemAdminManager implements SystemAdminService {
+
 	private SystemAdminDao systemAdminDao;
 	private ModelMapperService modelMapperService;
 
@@ -33,16 +32,15 @@ public class SystemAdminManager implements SystemAdminService{
 
 	@Override
 	public DataResult<List<SystemAdminSearchListDto>> getAll() {
-		List<SystemAdmin> result = this.systemAdminDao.findAll();
-		List<SystemAdminSearchListDto> response = result.stream()
-				.map(systemAdmin -> modelMapperService.forDto().map(systemAdmin, SystemAdminSearchListDto.class))
-				.collect(Collectors.toList());
-		return new SuccessDataResult<List<SystemAdminSearchListDto>>(response, Messages.systemUserListed);
+		return new SuccessDataResult<List<SystemAdminSearchListDto>>(
+				modelMapperService.forDto(systemAdminDao.findAll(), SystemAdminSearchListDto.class),
+				Messages.systemUserListed);
 	}
 
 	@Override
 	public Result add(CreateSystemAdminRequest createSystemAdminRequest) {
-		SystemAdmin systemAdmin = modelMapperService.forRequest().map(createSystemAdminRequest, SystemAdmin.class);
+		SystemAdmin systemAdmin = (SystemAdmin) modelMapperService.forRequest(createSystemAdminRequest,
+				SystemAdmin.class);
 		this.systemAdminDao.save(systemAdmin);
 		return new SuccessResult(Messages.systemAdminAdded);
 	}

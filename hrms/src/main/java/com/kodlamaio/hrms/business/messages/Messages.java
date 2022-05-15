@@ -30,5 +30,7 @@ public class Messages {
 	public static String passwordsDoNotMatch = "Şifreler uyuşmuyor.";
 	public static String mernisVerification = "Mernis doğrulaması geçerli değil";
 	public static String emailNotCorporate = "E-postanız, alan adınızla oluşturulmuş bir kurumsal e-posta olmalıdır.";
+	
+	public static String jobAdvertisementStatus="iş ilanı pasif hale getirildi.";
 
 }
